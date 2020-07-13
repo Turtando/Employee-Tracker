@@ -4,9 +4,8 @@ var inquirer = require("inquirer");
 
 
 var connection = mysql.createConnection({
-  host: "localh[
-
-  ]/ Your port; if not 3000
+  host: "localhost",
+  // Your port; if not 3000
   port: 3000,
 
   // Your username
@@ -113,24 +112,6 @@ function viewRoles() {
     })
   })
 }
-// function managerSearch() {
-//   inquirer 
-//   .prompt([
-//     {
-//     type: "list",
-//     name: "manager",
-//     message: "What manager are you looking for?", 
-//     type: "input", 
-//     } 
-//   ]).then(function(answer) {
-//     console.log(answer.department)
-//     connection.query("SELECT * FROM employee_db WHERE ?" , {manager: answer.manager_id}, function(err, res) {
-//       if (err) throw err;
-//       console.log("Manager: " + res.manager_id);
-//       runSearch(); 
-//     })
-//   })
-// }
 
 function addEmployee() {
   inquirer 
@@ -171,8 +152,8 @@ function addDepartment() {
         type: "input", 
       }  
     ]).then(function(answer) {
-      console.log("Adding employee...")
-      connection.query("INSERT INTO employee_db ?" [answer.first_name, answer.last_name], function(err,res){
+      console.log("Adding department...")
+      connection.query("INSERT INTO employee_db ?" [res.department], function(err,res){
         if (err) throw err;
       } )
     })
@@ -192,6 +173,24 @@ function addRole() {
       } )
     })
 }
+// function managerSearch() {
+//   inquirer 
+//   .prompt([
+//     {
+//     type: "list",
+//     name: "manager",
+//     message: "What manager are you looking for?", 
+//     type: "input", 
+//     } 
+//   ]).then(function(answer) {
+//     console.log(answer.department)
+//     connection.query("SELECT * FROM employee_db WHERE ?" , {manager: answer.manager_id}, function(err, res) {
+//       if (err) throw err;
+//       console.log("Manager: " + res.manager_id);
+//       runSearch(); 
+//     })
+//   })
+// }
 
 
 // function removeEmployee() {
