@@ -33,11 +33,11 @@ function runSearch() {
         choices: [
           "View All Employees",
           "View All Employees By Department",
-          "View All Employees By Manager",
+          "View All Employees By Roles",
           "Add Employee",
-          "Remove Employee",
-          "Update Employee Manager",
-          "View all Roles"
+          "Add Department",
+          "Add Role",
+          "Update Employee Manager"
         ]
       }
     ]).then(function(answer){
@@ -46,21 +46,22 @@ function runSearch() {
           viewEmployees();
           break;
         case "View All Employees By Department":
-          departmentSearch();
+          viewDepartments();
           break;
-        case "View All Employees By Manager":
-          managerSearch();
+        case "View All Employees By Role":
+          viewRoles();
           break;
         case "Add Employee":
           addEmployee();
           break;
-        case "Remove Employee":
-          removeEmployee();
+        case "Add Department":
+          addDepartment();
           break;
-        case "Update Employee Manager":
-          updateManager();
-        case "View All Roles":
-          viewRoles();
+        case "Add Role":
+          addRole();
+          break;
+        case "Update Employee":
+          updateEmployee();
           break;
       }
     })
@@ -77,43 +78,59 @@ function viewEmployees() {
   )
 }
 
-function departmentSearch() {
+function viewDepartments() {
   inquirer 
   .prompt([
     {
-    type: "list",
     name: "department",
-    message: "What department are you looking for?",
+    message: "What department of employees are you looking for?",
     type: "input", 
     } 
   ]).then(function(answer) {
     console.log(answer.department)
     connection.query("SELECT * FROM employee_db WHERE ?" , {department: answer.department_name}, function(err, res) {
       if (err) throw err;
-      console.log("Department: " + res.department);
+      console.log("Department: " + res.department); 
       runSearch(); 
     })
   })
 }
 
-function managerSearch() {
+function viewRoles() {
   inquirer 
   .prompt([
     {
-    type: "list",
-    name: "manager",
-    message: "What manager are you looking for?", 
+    name: "role",
+    message: "What role of employees are you looking for?",
     type: "input", 
     } 
   ]).then(function(answer) {
     console.log(answer.department)
-    connection.query("SELECT * FROM employee_db WHERE ?" , {manager: answer.manager_id}, function(err, res) {
+    connection.query("SELECT * FROM employee_db WHERE ?" , {role: answer.roles}, function(err, res) {
       if (err) throw err;
-      console.log("Department: " + res.department);
+      console.log("Department: " + res.roles); 
       runSearch(); 
     })
   })
 }
+// function managerSearch() {
+//   inquirer 
+//   .prompt([
+//     {
+//     type: "list",
+//     name: "manager",
+//     message: "What manager are you looking for?", 
+//     type: "input", 
+//     } 
+//   ]).then(function(answer) {
+//     console.log(answer.department)
+//     connection.query("SELECT * FROM employee_db WHERE ?" , {manager: answer.manager_id}, function(err, res) {
+//       if (err) throw err;
+//       console.log("Manager: " + res.manager_id);
+//       runSearch(); 
+//     })
+//   })
+// }
 
 function addEmployee() {
   inquirer 
@@ -137,6 +154,45 @@ function addEmployee() {
       } )
     })
 }
+
+function addDepartment() {
+  inquirer 
+    .prompt([
+      {
+      type: "list",
+      message: "What is the first name of the employee",
+      name: "first_name",
+      type: "input", 
+      },
+      {
+        type: "list",
+        message: "What is the last name of the employee",
+        name: "last_name",
+        type: "input", 
+      }  
+    ]).then(function(answer) {
+      console.log("Adding employee...")
+      connection.query("INSERT INTO employee_db ?" [answer.first_name, answer.last_name], function(err,res){
+        if (err) throw err;
+      } )
+    })
+}
+function addRole() {
+  inquirer 
+    .prompt([
+      {
+      type: "list",
+      message: "What is the role of employees you'd like to search",
+      name: "role",
+      type: "input", 
+      },
+    ]).then(function(answer) {
+      connection.query("INSERT INTO employee_db ?" [answer.role], function(err,res){
+        if (err) throw err;
+      } )
+    })
+}
+
 
 // function removeEmployee() {
 //   inquirer 
