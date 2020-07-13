@@ -2,7 +2,6 @@ var mysql = require("mysql");
 var express = require("express");
 var inquirer = require("inquirer");
 
-
 var connection = mysql.createConnection({
   host: "localhost",
   // Your port; if not 3000
@@ -13,14 +12,14 @@ var connection = mysql.createConnection({
 
   // Your password
   password: "christopherturton",
-  database: "employee_db"
+  database: "employee_db",
 });
 
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n")
-    runSearch();
-  });
+connection.connect(function (err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId + "\n");
+  runSearch();
+});
 
 function runSearch() {
   inquirer
@@ -36,10 +35,11 @@ function runSearch() {
           "Add Employee",
           "Add Department",
           "Add Role",
-          "Update Employee Manager"
-        ]
-      }
-    ]).then(function(answer){
+          "Update Employee Manager",
+        ],
+      },
+    ])
+    .then(function (answer) {
       switch (answer.action) {
         case "View All Employees":
           viewEmployees();
@@ -63,146 +63,166 @@ function runSearch() {
           updateEmployee();
           break;
       }
-    })
+    });
 }
 
 function viewEmployees() {
-    console.log("Searching for all employees...\n");
-    connection.query(
-      "SELECT * FROM employee_db", function(err, res) {
-        if (err) throw err;
-        console.log(res);
-        runSearch();
-      }
-  )
+  console.log("Searching for all employees...\n");
+  connection.query("SELECT * FROM employee_db", function (err, res) {
+    if (err) throw err;
+    console.log(res);
+ 
+  });   
+  runSearch();
 }
 
 function viewDepartments() {
-  inquirer 
-  .prompt([
-    {
-    name: "department",
-    message: "What department of employees are you looking for?",
-    type: "input", 
-    } 
-  ]).then(function(answer) {
-    console.log(answer.department)
-    connection.query("SELECT * FROM employee_db WHERE ?" , {department: answer.department_name}, function(err, res) {
-      if (err) throw err;
-      console.log("Department: " + res.department); 
-      runSearch(); 
-    })
-  })
+  inquirer
+    .prompt([
+      {
+        name: "department",
+        message: "What department of employees are you looking for?",
+        type: "input",
+      },
+    ])
+    .then(function (answer) {
+      console.log(answer.department);
+      connection.query(
+        "SELECT * FROM employee_db WHERE ?",
+        { department: answer.department_name },
+        function (err, res) {
+          if (err) throw err;
+          console.log("Department: " + res.department);
+          
+        }
+
+      );
+      runSearch();
+    });
 }
 
 function viewRoles() {
-  inquirer 
-  .prompt([
-    {
-    name: "role",
-    message: "What role of employees are you looking for?",
-    type: "input", 
-    } 
-  ]).then(function(answer) {
-    console.log(answer.department)
-    connection.query("SELECT * FROM employee_db WHERE ?" , {role: answer.roles}, function(err, res) {
-      if (err) throw err;
-      console.log("Department: " + res.roles); 
-      runSearch(); 
-    })
-  })
+  inquirer
+    .prompt([
+      {
+        name: "role",
+        message: "What role of employees are you looking for?",
+        type: "input",
+      },
+    ])
+    .then(function (answer) {
+      console.log(answer.department);
+      connection.query(
+        "SELECT * FROM employee_db WHERE ?",
+        { role: answer.roles },
+        function (err, res) {
+          if (err) throw err;
+          console.log("Department: " + res.roles);
+        }
+      );
+      runSearch();
+    });
 }
 
 function addEmployee() {
-  inquirer 
+  inquirer
     .prompt([
       {
-      type: "list",
-      message: "What is the first name of the employee",
-      name: "first_name",
-      type: "input", 
+        message: "What is the first name of the employee",
+        name: "first_name",
+        type: "input",
       },
       {
-        type: "list",
         message: "What is the last name of the employee",
         name: "last_name",
-        type: "input", 
-      }  
-    ]).then(function(answer) {
-      console.log("Adding employee...")
-      connection.query("INSERT INTO employee_db ?" [answer.first_name, answer.last_name], function(err,res){
-        if (err) throw err;
-      } )
-    })
+        type: "input",
+      },
+    ])
+    .then(function (answer) {
+      console.log("Adding employee...");
+      connection.query(
+        "INSERT INTO employee_db ?"[(answer.first_name, answer.last_name)],
+        function (err, res) {
+          if (err) throw err;
+        }
+      );
+      runSearch();
+    });
 }
 
 function addDepartment() {
-  inquirer 
+  inquirer
     .prompt([
       {
-      type: "list",
-      message: "What is the first name of the employee",
-      name: "first_name",
-      type: "input", 
+        message: "What is the first name of the employee",
+        name: "first_name",
+        type: "input",
       },
       {
         type: "list",
         message: "What is the last name of the employee",
         name: "last_name",
-        type: "input", 
-      }  
-    ]).then(function(answer) {
-      console.log("Adding department...")
-      connection.query("INSERT INTO employee_db ?" [res.department], function(err,res){
-        if (err) throw err;
-      } )
-    })
+        type: "input",
+      },
+    ])
+    .then(function (answer) {
+      console.log("Adding department...");
+      connection.query(
+        "INSERT INTO employee_db ?"[answer.department],
+        function (err, res) {
+          if (err) throw err;
+        }
+      );
+      runSearch();
+    });
 }
 function addRole() {
-  inquirer 
+  inquirer
     .prompt([
       {
-      type: "list",
-      message: "What is the role of employees you'd like to search",
-      name: "role",
-      type: "input", 
+        message: "What is the role you you'd like to add?",
+        name: "role",
+        type: "input",
       },
-    ]).then(function(answer) {
-      connection.query("INSERT INTO employee_db ?" [answer.role], function(err,res){
+    ])
+    .then(function (answer) {
+      connection.query("INSERT INTO employee_db ?"[answer.role], function (
+        err,
+        res
+      ) {
         if (err) throw err;
-      } )
-    })
+      });
+      runSearch();
+    });
 }
 // function managerSearch() {
-//   inquirer 
+//   inquirer
 //   .prompt([
 //     {
 //     type: "list",
 //     name: "manager",
-//     message: "What manager are you looking for?", 
-//     type: "input", 
-//     } 
+//     message: "What manager are you looking for?",
+//     type: "input",
+//     }
 //   ]).then(function(answer) {
 //     console.log(answer.department)
 //     connection.query("SELECT * FROM employee_db WHERE ?" , {manager: answer.manager_id}, function(err, res) {
 //       if (err) throw err;
 //       console.log("Manager: " + res.manager_id);
-//       runSearch(); 
+//       runSearch();
 //     })
 //   })
 // }
 
-
 // function removeEmployee() {
-//   inquirer 
+//   inquirer
 //     .prompt([
 //       {
 //       type: "list",
 //       message: "What employee would you like to remove?",
-//       type: "input", 
+//       type: "input",
 //       name: "employee"
-//       } 
+//       }
 //     ]).then(function({  }) {
 
 //     })
- 
